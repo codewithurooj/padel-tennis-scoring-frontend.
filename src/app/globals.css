@@ -1,26 +1,65 @@
 @import "tailwindcss";
 
+/*
+ * Courtside scoreboard palette — deliberately not the default Tailwind
+ * blue/indigo/purple SaaS ramp. Deep court-night ink background, turquoise
+ * "court" for Team A, terracotta "clay" for Team B, chalk-line whites for
+ * text, gold for pause/attention states.
+ */
+@theme {
+  --color-ink-950: #060f0d;
+  --color-ink-900: #0a1613;
+  --color-ink-850: #0d1c18;
+  --color-ink-800: #11211d;
+  --color-ink-700: #1a2e28;
+  --color-ink-600: #253f37;
+  --color-ink-500: #37554a;
+
+  --color-court-300: #7fe6db;
+  --color-court-400: #4dd9ce;
+  --color-court-500: #14b8ab;
+  --color-court-600: #0d8f85;
+  --color-court-700: #0a6b63;
+
+  --color-clay-300: #f5a97b;
+  --color-clay-400: #f2895a;
+  --color-clay-500: #e0672b;
+  --color-clay-600: #b8481a;
+  --color-clay-700: #8f3714;
+
+  --color-chalk-50: #faf8f2;
+  --color-chalk-100: #f2ede0;
+  --color-chalk-200: #e4dcc8;
+  --color-chalk-300: #d8d0bc;
+  --color-chalk-500: #a89f8a;
+  --color-chalk-700: #6b6355;
+
+  --color-gold-400: #f2c14e;
+  --color-gold-500: #e0a72e;
+  --color-gold-600: #b8841a;
+
+  --color-danger-400: #f27a63;
+  --color-danger-500: #e0523a;
+
+  --font-display: var(--font-oswald), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-geist-sans), sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background: var(--color-ink-950);
+  color: var(--color-chalk-100);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* Tabular figures keep score digits from jittering in width as they change. */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

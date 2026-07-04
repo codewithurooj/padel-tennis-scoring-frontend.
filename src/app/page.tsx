@@ -17,7 +17,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-1 flex-col">
       <header className="sticky top-0 z-10 border-b border-ink-700 bg-ink-950/95 px-5 pb-4 pt-6 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-xl items-center justify-between">
+        <div className="mx-auto flex w-full max-w-4xl items-center justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-court-400">
               Courtside
@@ -33,7 +33,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-xl flex-1 px-5 py-6">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-6">
         <Section title="Ongoing Matches" emptyLabel="No matches in progress.">
           {ongoing.map((match) => (
             <MatchCard key={match.id} match={match} />

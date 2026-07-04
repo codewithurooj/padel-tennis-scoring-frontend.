@@ -68,7 +68,7 @@ export default function LiveScoringPage() {
   return (
     <div className="flex flex-1 flex-col">
       <header className="sticky top-0 z-10 border-b border-ink-700 bg-ink-950/95 px-5 pb-3 pt-6 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-xl items-center gap-3">
+        <div className="mx-auto flex w-full max-w-4xl items-center gap-3">
           <Link
             href="/"
             className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-2xl text-chalk-300 active:bg-ink-800"
@@ -88,7 +88,7 @@ export default function LiveScoringPage() {
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-5 px-5 py-6">
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-5 px-5 py-6">
         {isPaused && (
           <div className="flex items-center justify-center gap-2 rounded-xl border border-gold-500/50 bg-gold-500/10 px-4 py-3">
             <span className="text-xl">⏸</span>

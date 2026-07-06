@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Screenshots (local debugging only)
+*_REC.png
+*_REC - Copy.png

@@ -19,6 +19,7 @@ export function createInitialScoreState(): ScoreState {
     isTieBreak: false,
     status: "ongoing",
     winner: null,
+    setScores: [],
   };
 }
 
@@ -47,6 +48,11 @@ function winSet(score: ScoreState, config: MatchConfig, winner: TeamId): ScoreSt
   const setsB = score.setsB + (winner === "B" ? 1 : 0);
   const setsToWin = SETS_TO_WIN[config.matchType];
   const matchWon = (winner === "A" ? setsA : setsB) >= setsToWin;
+  const completedSet = {
+    gamesA: score.gamesA,
+    gamesB: score.gamesB,
+    tieBreakLoserPoints: score.isTieBreak ? Math.min(score.pointsA, score.pointsB) : null,
+  };
   return {
     ...score,
     setsA,
@@ -56,6 +62,7 @@ function winSet(score: ScoreState, config: MatchConfig, winner: TeamId): ScoreSt
     pointsA: 0,
     pointsB: 0,
     isTieBreak: false,
+    setScores: [...score.setScores, completedSet],
     status: matchWon ? "completed" : "ongoing",
     winner: matchWon ? winner : null,
   };

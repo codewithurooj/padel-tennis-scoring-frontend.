@@ -6,6 +6,8 @@ import { FormEvent, useState } from "react";
 import { createMatch } from "@/lib/match-store";
 import { MatchType } from "@/lib/types";
 
+type MatchFormat = "SINGLES" | "DOUBLES";
+
 interface FormState {
   matchName: string;
   teamAName: string;
@@ -14,6 +16,7 @@ interface FormState {
   teamBName: string;
   playerB1: string;
   playerB2: string;
+  matchFormat: MatchFormat;
   matchType: MatchType;
   tieBreakEnabled: boolean;
 }
@@ -26,24 +29,30 @@ const INITIAL_STATE: FormState = {
   teamBName: "",
   playerB1: "",
   playerB2: "",
+  matchFormat: "DOUBLES",
   matchType: "best-of-3",
   tieBreakEnabled: true,
 };
 
 type Errors = Partial<Record<keyof FormState, string>>;
 
-const REQUIRED_FIELDS: { key: keyof FormState; label: string }[] = [
-  { key: "teamAName", label: "Team A name" },
-  { key: "playerA1", label: "Team A — Player 1 name" },
-  { key: "playerA2", label: "Team A — Player 2 name" },
-  { key: "teamBName", label: "Team B name" },
-  { key: "playerB1", label: "Team B — Player 1 name" },
-  { key: "playerB2", label: "Team B — Player 2 name" },
-];
+function requiredFields(format: MatchFormat): { key: keyof FormState; label: string }[] {
+  const fields: { key: keyof FormState; label: string }[] = [
+    { key: "teamAName", label: "Team A name" },
+    { key: "playerA1", label: "Team A — Player 1 name" },
+    { key: "teamBName", label: "Team B name" },
+    { key: "playerB1", label: "Team B — Player 1 name" },
+  ];
+  if (format === "DOUBLES") {
+    fields.splice(2, 0, { key: "playerA2", label: "Team A — Player 2 name" });
+    fields.push({ key: "playerB2", label: "Team B — Player 2 name" });
+  }
+  return fields;
+}
 
 function validate(form: FormState): Errors {
   const errors: Errors = {};
-  for (const { key, label } of REQUIRED_FIELDS) {
+  for (const { key, label } of requiredFields(form.matchFormat)) {
     if (!form[key].toString().trim()) {
       errors[key] = `${label} is required.`;
     }
@@ -69,12 +78,17 @@ export default function CreateMatchPage() {
     }
     setErrors({});
 
+    const isDoubles = form.matchFormat === "DOUBLES";
     const match = createMatch({
       matchName: form.matchName.trim() || undefined,
       teamAName: form.teamAName.trim(),
       teamBName: form.teamBName.trim(),
-      playersA: [form.playerA1.trim(), form.playerA2.trim()],
-      playersB: [form.playerB1.trim(), form.playerB2.trim()],
+      playersA: isDoubles
+        ? [form.playerA1.trim(), form.playerA2.trim()]
+        : [form.playerA1.trim()],
+      playersB: isDoubles
+        ? [form.playerB1.trim(), form.playerB2.trim()]
+        : [form.playerB1.trim()],
       config: { matchType: form.matchType, tieBreakEnabled: form.tieBreakEnabled },
     });
 
@@ -105,9 +119,32 @@ export default function CreateMatchPage() {
             placeholder="Court 3 · Friday Night League"
           />
 
+          <fieldset>
+            <legend className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-chalk-500">
+              Format
+            </legend>
+            <div className="grid grid-cols-2 gap-3">
+              {(["DOUBLES", "SINGLES"] as MatchFormat[]).map((format) => (
+                <button
+                  key={format}
+                  type="button"
+                  onClick={() => update("matchFormat", format)}
+                  className={`min-h-[44px] rounded-lg border px-4 py-3 font-display text-lg font-semibold transition-colors ${
+                    form.matchFormat === format
+                      ? "border-court-500 bg-court-500/15 text-court-300"
+                      : "border-ink-700 bg-ink-850 text-chalk-300 active:bg-ink-800"
+                  }`}
+                >
+                  {format === "DOUBLES" ? "Doubles" : "Singles"}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+
           <TeamSection
             accent="court"
             title="Team A"
+            isDoubles={form.matchFormat === "DOUBLES"}
             teamName={form.teamAName}
             onTeamName={(v) => update("teamAName", v)}
             teamError={errors.teamAName}
@@ -122,6 +159,7 @@ export default function CreateMatchPage() {
           <TeamSection
             accent="clay"
             title="Team B"
+            isDoubles={form.matchFormat === "DOUBLES"}
             teamName={form.teamBName}
             onTeamName={(v) => update("teamBName", v)}
             teamError={errors.teamBName}
@@ -230,6 +268,7 @@ function Field({
 function TeamSection({
   accent,
   title,
+  isDoubles,
   teamName,
   onTeamName,
   teamError,
@@ -242,6 +281,7 @@ function TeamSection({
 }: {
   accent: "court" | "clay";
   title: string;
+  isDoubles: boolean;
   teamName: string;
   onTeamName: (v: string) => void;
   teamError?: string;
@@ -258,8 +298,15 @@ function TeamSection({
       <h2 className={`mb-4 font-display text-xl font-bold ${accentClass}`}>{title}</h2>
       <div className="flex flex-col gap-4">
         <Field label="Team name" value={teamName} onChange={onTeamName} error={teamError} />
-        <Field label="Player 1 name" value={player1} onChange={onPlayer1} error={player1Error} />
-        <Field label="Player 2 name" value={player2} onChange={onPlayer2} error={player2Error} />
+        <Field
+          label={isDoubles ? "Player 1 name" : "Player name"}
+          value={player1}
+          onChange={onPlayer1}
+          error={player1Error}
+        />
+        {isDoubles && (
+          <Field label="Player 2 name" value={player2} onChange={onPlayer2} error={player2Error} />
+        )}
       </div>
     </div>
   );

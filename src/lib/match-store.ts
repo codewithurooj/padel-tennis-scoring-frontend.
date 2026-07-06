@@ -48,7 +48,18 @@ const seedMatches: Match[] = [
     playersB: ["Saad Rehman", "Usman Tariq"],
     config: { matchType: "best-of-3", tieBreakEnabled: true },
     status: "completed",
-    score: score({ setsA: 2, setsB: 0, gamesA: 6, gamesB: 3, status: "completed", winner: "A" }),
+    score: score({
+      setsA: 2,
+      setsB: 0,
+      gamesA: 6,
+      gamesB: 3,
+      status: "completed",
+      winner: "A",
+      setScores: [
+        { gamesA: 6, gamesB: 4, tieBreakLoserPoints: null },
+        { gamesA: 6, gamesB: 3, tieBreakLoserPoints: null },
+      ],
+    }),
     createdAt: "2026-07-01T18:00:00.000Z",
   },
   {
@@ -59,8 +70,31 @@ const seedMatches: Match[] = [
     playersB: ["Nabeel Anjum", "Waqas Ahmed"],
     config: { matchType: "best-of-3", tieBreakEnabled: false },
     status: "completed",
-    score: score({ setsA: 1, setsB: 2, gamesA: 4, gamesB: 6, status: "completed", winner: "B" }),
+    score: score({
+      setsA: 1,
+      setsB: 2,
+      gamesA: 4,
+      gamesB: 6,
+      status: "completed",
+      winner: "B",
+      setScores: [
+        { gamesA: 6, gamesB: 3, tieBreakLoserPoints: null },
+        { gamesA: 6, gamesB: 7, tieBreakLoserPoints: 5 },
+        { gamesA: 4, gamesB: 6, tieBreakLoserPoints: null },
+      ],
+    }),
     createdAt: "2026-06-30T16:30:00.000Z",
+  },
+  {
+    id: "demo-singles-live",
+    teamAName: "Adeel Malik",
+    teamBName: "Waleed Farooq",
+    playersA: ["Adeel Malik"],
+    playersB: ["Waleed Farooq"],
+    config: { matchType: "best-of-3", tieBreakEnabled: true },
+    status: "ongoing",
+    score: score({ pointsA: 1, pointsB: 0, gamesA: 2, gamesB: 1, setsA: 0, setsB: 0 }),
+    createdAt: "2026-07-03T11:20:00.000Z",
   },
 ];
 

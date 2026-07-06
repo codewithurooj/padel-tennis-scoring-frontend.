@@ -15,6 +15,12 @@ export interface MatchConfig {
  * `status`/`winner` here are the engine's own ongoing/completed signal — distinct
  * from Match.status, which adds the "paused" app-level state on top.
  */
+export interface SetScore {
+  gamesA: number;
+  gamesB: number;
+  tieBreakLoserPoints: number | null;
+}
+
 export interface ScoreState {
   pointsA: number;
   pointsB: number;
@@ -25,6 +31,7 @@ export interface ScoreState {
   isTieBreak: boolean;
   status: "ongoing" | "completed";
   winner: TeamId | null;
+  setScores: SetScore[];
 }
 
 export interface Match {
@@ -32,8 +39,8 @@ export interface Match {
   matchName?: string;
   teamAName: string;
   teamBName: string;
-  playersA: [string, string];
-  playersB: [string, string];
+  playersA: string[];
+  playersB: string[];
   config: MatchConfig;
   status: MatchStatus;
   score: ScoreState;

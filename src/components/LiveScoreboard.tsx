@@ -1,4 +1,4 @@
-import { getPointsDisplay } from "@/lib/scoring";
+import { getCurrentServer, getPointsDisplay } from "@/lib/scoring";
 import { Match, SetScore } from "@/lib/types";
 
 function formatSetScore(set: SetScore): string {
@@ -13,6 +13,7 @@ function formatSetScore(set: SetScore): string {
 export default function LiveScoreboard({ match }: { match: Match }) {
   const { score } = match;
   const display = getPointsDisplay(score);
+  const server = getCurrentServer(score, match.playersA, match.playersB);
 
   return (
     <div className="rounded-2xl border border-ink-700 bg-ink-900 p-4 sm:p-6">
@@ -34,6 +35,7 @@ export default function LiveScoreboard({ match }: { match: Match }) {
           pointLabel={
             display.kind === "normal" ? display.a : display.kind === "tiebreak" ? String(display.a) : "–"
           }
+          servingPlayerName={server.team === "A" ? server.playerName : undefined}
         />
 
         <div className="col-span-3 h-px bg-ink-700" />
@@ -47,6 +49,7 @@ export default function LiveScoreboard({ match }: { match: Match }) {
           pointLabel={
             display.kind === "normal" ? display.b : display.kind === "tiebreak" ? String(display.b) : "–"
           }
+          servingPlayerName={server.team === "B" ? server.playerName : undefined}
         />
       </div>
 
@@ -76,6 +79,7 @@ function TeamRow({
   sets,
   games,
   pointLabel,
+  servingPlayerName,
 }: {
   accent: "court" | "clay";
   teamName: string;
@@ -83,6 +87,7 @@ function TeamRow({
   sets: number;
   games: number;
   pointLabel: string;
+  servingPlayerName?: string;
 }) {
   const nameColor = accent === "court" ? "text-court-300" : "text-clay-300";
   const digitColor = accent === "court" ? "text-court-400" : "text-clay-400";
@@ -92,7 +97,20 @@ function TeamRow({
         <p className={`truncate font-display text-lg font-bold sm:text-xl ${nameColor}`}>
           {teamName}
         </p>
-        <p className="truncate text-xs text-chalk-500">{players.join(" / ")}</p>
+        <p className="truncate text-xs text-chalk-500">
+          {players.map((player, index) => (
+            <span key={player}>
+              {index > 0 && " / "}
+              {player === servingPlayerName ? (
+                <span className={`font-semibold ${nameColor}`} aria-label={`${player} is serving`}>
+                  ● {player}
+                </span>
+              ) : (
+                player
+              )}
+            </span>
+          ))}
+        </p>
         <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-chalk-500">
           Sets {sets}
         </p>

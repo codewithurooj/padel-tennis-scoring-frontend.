@@ -34,6 +34,11 @@ export interface ScoreState {
   setScores: SetScore[];
 }
 
+export interface ServerInfo {
+  team: TeamId;
+  playerName: string;
+}
+
 export interface Match {
   id: string;
   matchName?: string;

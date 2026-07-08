@@ -1,4 +1,4 @@
-import { MatchConfig, ScoreState, TeamId } from "./types";
+import { MatchConfig, ScoreState, ServerInfo, TeamId } from "./types";
 
 /** Non-tie-break point labels, indexed by raw point count 0-3 (data-model.md PointDisplay). */
 const POINT_LABELS = ["Love", "15", "30", "40"] as const;
@@ -106,4 +106,36 @@ export function awardPoint(score: ScoreState, config: MatchConfig, team: TeamId)
   }
 
   return { ...score, pointsA, pointsB };
+}
+
+/**
+ * Derives whose turn it is to serve from completed-game counts alone (mirrors
+ * backend's derive_current_server, specs/004-serve-indicator). Singles rotates
+ * A/B every game; doubles rotates A1->B1->A2->B2. During a tie-break, serve
+ * shifts every 2 points (1 point for the very first), continuing the same order.
+ */
+export function getCurrentServer(
+  score: ScoreState,
+  playersA: string[],
+  playersB: string[],
+): ServerInfo {
+  const isDoubles = playersA.length === 2;
+  const n = isDoubles ? 4 : 2;
+
+  const completedGames = score.setScores.reduce((sum, set) => sum + set.gamesA + set.gamesB, 0);
+  const gamesCompleted = completedGames + score.gamesA + score.gamesB;
+
+  let slot = gamesCompleted % n;
+  if (score.isTieBreak) {
+    const pointsPlayed = score.pointsA + score.pointsB;
+    const offset = Math.ceil(pointsPlayed / 2);
+    slot = (slot + offset) % n;
+  }
+
+  if (slot < 2) {
+    const team: TeamId = slot === 0 ? "A" : "B";
+    return { team, playerName: (team === "A" ? playersA : playersB)[0] };
+  }
+  const team: TeamId = slot === 2 ? "A" : "B";
+  return { team, playerName: (team === "A" ? playersA : playersB)[1] };
 }

@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { buildSpectatorUrl } from "@/lib/spectator-url";
 
 export default function CopySpectatorLinkButton({ matchId }: { matchId: string }) {
   const [copied, setCopied] = useState(false);
 
   async function handleClick() {
-    const url = `${window.location.origin}/matches/${matchId}/watch`;
+    const url = buildSpectatorUrl(matchId);
     await navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

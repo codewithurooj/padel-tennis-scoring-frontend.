@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import CopySpectatorLinkButton from "@/components/CopySpectatorLinkButton";
 import LiveScoreboard from "@/components/LiveScoreboard";
 import PausedBanner from "@/components/PausedBanner";
+import SpectatorQrCode from "@/components/SpectatorQrCode";
 import { awardPoint } from "@/lib/scoring";
 import { getMatch, saveMatch } from "@/lib/match-store";
 import { Match, ScoreState, TeamId } from "@/lib/types";
@@ -86,6 +87,7 @@ export default function LiveScoringPage() {
               {record.teamAName} <span className="text-chalk-500">vs</span> {record.teamBName}
             </p>
           </div>
+          <SpectatorQrCode matchId={record.id} />
           <CopySpectatorLinkButton matchId={record.id} />
           <StatusPill isPaused={isPaused} isCompleted={isCompleted} />
         </div>
